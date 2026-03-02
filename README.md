@@ -14,6 +14,7 @@
 
 End-to-end analytics engineering project on the **Olist Brazilian e-commerce** dataset.  
 Pipeline: `raw → staging → marts → Power BI dashboard`
+![Dashboard](./screenshots/Screenshot 3.png)
 
 **Decision use-cases:**
 - Seller policy & SLA enforcement (delay → low review → churn)
