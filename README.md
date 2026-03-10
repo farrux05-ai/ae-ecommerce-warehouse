@@ -19,7 +19,13 @@ Pipeline: `raw → staging → marts → Power BI dashboard`
 ![Dashboard](./screenshots/cx_impact_curve.png)
 ![Dashboard](./screenshots/seller_scorecard.jpg)
 
+## Why this warehouse exists
 
+Operational e-commerce data is not immediately reliable for business decisions.
+This warehouse standardizes raw order, payment, review, product, and seller data into trusted marts for CX, growth, and repeat revenue analysis.
+The goal is to make delay impact measurable and decision-ready across regions, sellers, and product categories.
+
+---
 **Decision use-cases:**
 - Seller policy & SLA enforcement (delay → low review → churn)
 - Logistics & ETA tuning by region (state/city)
@@ -43,6 +49,30 @@ Raw (PostgreSQL)
 | **Dims** | `dim_customer`, `dim_seller`, `dim_product`, `dim_geo` |
 | **Marts** | `mart_growth_kpi`, `mart_growth_cohort_retention_monthly`, `mart_growth_funnel_daily`, `mart_growth_repeat_metrics`, `mart_growth_segments` |
 
+---
+## Core metric definitions
+
+- GMV: Sum of approved payment values for valid orders
+- Repeat GMV: GMV from customers with more than one completed order
+- Delivered rate: Delivered orders / total valid orders
+- Delay days: Actual delivery date - estimated delivery date
+- CSAT proxy: Average review score
+---
+## Model grain
+
+- fct_orders: one row per order
+- fct_order_items: one row per order item
+- fct_reviews: one row per review event
+- mart_growth_funnel_daily: one row per date
+- mart_growth_repeat_metrics: one row per cohort / segment / period (depending on model)
+---
+## Mart consumers
+
+- mart_growth_kpi → executive KPI monitoring
+- mart_growth_funnel_daily → growth / ops team
+- mart_growth_repeat_metrics → CRM / retention analysis
+- mart_growth_cohort_retention_monthly → lifecycle and retention review
+- mart_growth_segments → customer mix and value segmentation
 ---
 
 ## 🔑 Key Findings
@@ -71,10 +101,21 @@ Raw (PostgreSQL)
 | Page 2 | CX Impact curve — delay days vs review score |
 | Page 3 | Seller scorecard + drill-through |
 
+### Dashboard evidence
+
+1. Executive Summary — overall GMV, orders, CSAT trend
+2. CX Impact Curve — how increasing delay days correlate with weaker reviews
+3. Seller Scorecard — identify sellers with both volume and delivery-risk exposure
+
 📁 Screenshots: [`/screenshots/`](./screenshots/)  
 📄 Report spec: [`/dashboard/powerbi/report_spec.md`](./dashboard/powerbi/report_spec.md)
 
 ---
+## Recommended actions
+
+- Prioritize SLA monitoring for high-volume sellers with repeated delay exposure
+- Review ETA and packaging rules in categories with strong delay-to-review sensitivity
+- Segment regions where logistics delays disproportionately affect repeat purchase behavior
 
 ## ⚙️ How to Run
 
